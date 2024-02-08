@@ -9,6 +9,11 @@ export type INewUser = {
   password: string;
 };
 
+export type ILogInUser = {
+  email: string;
+  password: string;
+}
+
 export type ErrorMessageProps = {
   message: string;
 };

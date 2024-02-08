@@ -1,5 +1,5 @@
 import { ID } from 'appwrite';
-import { INewUser } from "@/types";
+import { ILogInUser, INewUser } from "@/types";
 import { account } from './config';
 
 export async function createUserAccount(user: INewUser) {
@@ -15,4 +15,14 @@ export async function createUserAccount(user: INewUser) {
         console.error(error);
         return error;
     }
+}
+
+export async function logInUser(user: ILogInUser) {
+    try {
+        const x = account.createEmailSession(user.email, user.password);
+        console.log(x);
+    } catch(error) {
+        console.error(error);
+    }
+
 }

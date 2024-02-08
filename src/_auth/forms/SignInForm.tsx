@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInValidation } from "@/lib/validation";
 import { Link } from "react-router-dom";
+import { logInUser } from "@/lib/appwrite/api";
 
 const SignInForm = () => {
   const form = useForm<z.infer<typeof signInValidation>>({
@@ -26,9 +27,7 @@ const SignInForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof signInValidation>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    logInUser(values);
   }
 
   return (

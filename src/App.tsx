@@ -4,12 +4,10 @@ import SignUpForm from "./_auth/forms/SignUpForm";
 import SignInForm from "./_auth/forms/SignInForm";
 import { Dashboard, Home } from "./_root/pages";
 import RootLayout from "./_root/RootLayout";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 
 function App() {
   return (
     <main className="flex h-screen">
-      <ErrorMessage message="This is an error message" />
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
