@@ -34,7 +34,6 @@ const authSlice = createSlice({
       .addCase(logIn.rejected, (state) => {
         state.isLoading = false;
         state.isError = "Error logging in, please try again.";
-        createErrorToast(state.isError);
       })
       .addCase(logOut.pending, (state) => {
         state.isLoading = true;
@@ -51,7 +50,6 @@ const authSlice = createSlice({
       .addCase(logOut.rejected, (state) => {
         state.isLoading = false;
         state.isError = "Error logging out, please try again.";
-        createErrorToast(state.isError);
       });
   },
 });
@@ -62,6 +60,9 @@ export const logIn = createAsyncThunk(
     try {
       await logInUser(user);
     } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      }
       return rejectWithValue(error);
     }
   }
@@ -73,6 +74,9 @@ export const logOut = createAsyncThunk(
     try {
       await logOutUser();
     } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      }
       return rejectWithValue(error);
     }
   }
