@@ -2,7 +2,7 @@ import { useAppSelector } from "@/lib/redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const isAuthorized: boolean = useAppSelector((state) => state.auth.isAuthorized);
+  const isAuthorized = useAppSelector((state) => state.auth.isAuthorized);
 
   return (
     <>

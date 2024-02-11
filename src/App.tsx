@@ -6,43 +6,34 @@ import { Dashboard, Home } from "./_root/pages";
 import RootLayout from "./_root/RootLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
-import { useAppDispatch } from "./lib/redux/store";
-import { isLoggedIn } from "./lib/appwrite/api";
-import { setAuthorized } from "./lib/redux/auth/authSlice";
+import { useAppSelector } from "./lib/redux/store";
+import AuthProvider from "./components/AuthProvider/AuthProvider";
+import useAuth from "./hooks/useAuth";
 
 function App() {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    checkIsLoggedIn();
-  }, []);
-
-  const checkIsLoggedIn = async () => {
-    if (await isLoggedIn()) {
-      dispatch(setAuthorized(true));
-    } else {
-      dispatch(setAuthorized(false));
-    }
-  }
+  const { isAuthorized } = useAppSelector((state) => state.auth);
+  useAuth();
 
   return (
     <>
       <ToastContainer />
       <main className="flex h-screen">
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route element={<AuthLayout />}>
-              <Route path="/sign-up" element={<SignUpForm />} />
-              <Route path="/sign-in" element={<SignInForm />} />
-            </Route>
-            {/* Private Routes */}
-            <Route element={<RootLayout />}>
-              <Route index element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <AuthProvider isAuth={isAuthorized}>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route element={<AuthLayout />}>
+                <Route path="/sign-up" element={<SignUpForm />} />
+                <Route path="/sign-in" element={<SignInForm />} />
+              </Route>
+              {/* Private Routes */}
+              <Route element={<RootLayout />}>
+                <Route index element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </main>
     </>
   );

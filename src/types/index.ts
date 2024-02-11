@@ -19,6 +19,12 @@ export type ErrorMessageProps = {
 };
 
 export interface authState {
-  isAuthorized: boolean;
+  isAuthorized: boolean | null;
+  isLoading: boolean;
+  isError: string | null;
+}
+
+export interface loadingState {
+  isLoading: boolean;
 }
 

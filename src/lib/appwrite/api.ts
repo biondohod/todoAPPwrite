@@ -27,6 +27,10 @@ export async function logInUser(user: ILogInUser) {
   account.createEmailSession(user.email, user.password);
 }
 
+export async function logOutUser() {
+  account.deleteSession("current");
+}
+
 export async function isLoggedIn() {
   try {
     await account.get();

@@ -15,8 +15,11 @@ import { Input } from "@/components/ui/input";
 import { signInValidation } from "@/lib/validation";
 import { Link } from "react-router-dom";
 import { logInUser } from "@/lib/appwrite/api";
+import { renderButton } from "@/utils/utils";
+import { useAppSelector } from "@/lib/redux/store";
 
 const SignInForm = () => {
+  const { isLoading } = useAppSelector((state) => state.auth);
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
     defaultValues: {
@@ -63,18 +66,17 @@ const SignInForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{renderButton(isLoading, "Log In")}</Button>
           <p className="text-small-regular text-light-2 text-center mt-2">
-          Don't have an account?
-          <Link
-            to="/sign-up"
-            className="text-blue-600  text-small-semibold ml-1"
-          >
-            Sign Up
-          </Link>
-        </p>
+            Don't have an account?
+            <Link
+              to="/sign-up"
+              className="text-blue-600  text-small-semibold ml-1"
+            >
+              Sign Up
+            </Link>
+          </p>
         </form>
-
       </Form>
     </>
   );

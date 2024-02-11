@@ -15,11 +15,11 @@ import { Input } from "@/components/ui/input";
 import { signUpValidation } from "@/lib/validation";
 import { Link } from "react-router-dom";
 import { createUserAccount } from "@/lib/appwrite/api";
+import { useAppSelector } from "@/lib/redux/store";
+import { renderButton } from "@/utils/utils";
 
 const SignUpForm = () => {
-
-  
-
+  const { isLoading } = useAppSelector((state) => state.auth);
   const form = useForm<z.infer<typeof signUpValidation>>({
     resolver: zodResolver(signUpValidation),
     defaultValues: {
@@ -31,8 +31,10 @@ const SignUpForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof signUpValidation>) {
-    createUserAccount(values)
+    createUserAccount(values);
   }
+
+  
 
   return (
     <>
@@ -94,18 +96,19 @@ const SignUpForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isLoading}>
+            {renderButton(isLoading, "Sign Up")}
+          </Button>
           <p className="text-small-regular text-light-2 text-center mt-2">
-          Already have an account?
-          <Link
-            to="/sign-in"
-            className="text-blue-600  text-small-semibold ml-1"
-          >
-            Log in
-          </Link>
-        </p>
+            Already have an account?
+            <Link
+              to="/sign-in"
+              className="text-blue-600  text-small-semibold ml-1"
+            >
+              Log in
+            </Link>
+          </p>
         </form>
-
       </Form>
     </>
   );
