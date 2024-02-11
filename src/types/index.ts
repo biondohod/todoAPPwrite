@@ -18,6 +18,11 @@ export type ErrorMessageProps = {
   message: string;
 };
 
+export type AuthProviderProps = {
+  children: JSX.Element;
+  isAuth: boolean | null;
+}
+
 export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
