@@ -17,6 +17,9 @@ import { Link } from "react-router-dom";
 import { createUserAccount } from "@/lib/appwrite/api";
 
 const SignUpForm = () => {
+
+  
+
   const form = useForm<z.infer<typeof signUpValidation>>({
     resolver: zodResolver(signUpValidation),
     defaultValues: {
@@ -28,7 +31,7 @@ const SignUpForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof signUpValidation>) {
-    createUserAccount(values);
+    createUserAccount(values)
   }
 
   return (

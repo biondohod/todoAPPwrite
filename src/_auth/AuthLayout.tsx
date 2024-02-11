@@ -1,11 +1,12 @@
+import { useAppSelector } from "@/lib/redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
-  const isAuthenticated = false;
+  const isAuthorized: boolean = useAppSelector((state) => state.auth.isAuthorized);
 
   return (
     <>
-      {isAuthenticated ? (
+      {isAuthorized ? (
         <Navigate to="/" />
       ) : (
         <>
@@ -13,7 +14,7 @@ const AuthLayout = () => {
             <Outlet />
           </section>
 
-          <img src="/assets/images/background.jpg" aria-hidden={true} className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat"/>
+          <img src="/assets/images/background.jpg" aria-hidden={true} className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat pointer-events-none"/>
         </>
       )}
     </>

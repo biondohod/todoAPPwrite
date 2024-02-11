@@ -8,7 +8,7 @@ export const signUpValidation = z.object({
     message: "Invalid email address.",
   }),
   password: z.string().min(8, {
-    message: "Password must be at least 6 characters.",
+    message: "Password must be at least 8 characters.",
   }),
   confirmPassword: z.string().min(8),
 }).superRefine(({ confirmPassword, password }, ctx) => {

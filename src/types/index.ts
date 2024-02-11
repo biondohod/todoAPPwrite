@@ -17,3 +17,8 @@ export type ILogInUser = {
 export type ErrorMessageProps = {
   message: string;
 };
+
+export interface authState {
+  isAuthorized: boolean;
+}
+
