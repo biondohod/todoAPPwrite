@@ -24,11 +24,11 @@ export async function createUserAccount(user: INewUser) {
 }
 
 export async function logInUser(user: ILogInUser) {
-  account.createEmailSession(user.email, user.password);
+  await account.createEmailSession(user.email, user.password);
 }
 
 export async function logOutUser() {
-  account.deleteSession("current");
+  await account.deleteSession("current");
 }
 
 export async function isLoggedIn() {

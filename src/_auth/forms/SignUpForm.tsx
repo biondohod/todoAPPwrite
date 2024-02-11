@@ -30,7 +30,7 @@ const SignUpForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof signUpValidation>) {
+  function signUpHandler(values: z.infer<typeof signUpValidation>) {
     createUserAccount(values);
   }
 
@@ -41,7 +41,7 @@ const SignUpForm = () => {
       <h2 className="text-2xl font-semibold mb-6">Sign Up</h2>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(signUpHandler)}
           className="flex flex-col gap-4 w-full max-w-lg"
         >
           <FormField

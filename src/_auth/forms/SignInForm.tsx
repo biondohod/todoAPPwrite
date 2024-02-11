@@ -14,12 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInValidation } from "@/lib/validation";
 import { Link } from "react-router-dom";
-import { logInUser } from "@/lib/appwrite/api";
 import { renderButton } from "@/utils/utils";
-import { useAppSelector } from "@/lib/redux/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { logIn } from "@/lib/redux/auth/authSlice";
 
 const SignInForm = () => {
   const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
     defaultValues: {
@@ -28,8 +29,8 @@ const SignInForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof signInValidation>) {
-    logInUser(values);
+  function logInHandler(values: z.infer<typeof signInValidation>) {
+    dispatch(logIn(values));
   }
 
   return (
@@ -37,7 +38,7 @@ const SignInForm = () => {
       <h2 className="text-2xl font-semibold mb-6">Welcome back!</h2>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(logInHandler)}
           className="flex flex-col gap-4 w-full max-w-lg"
         >
           <FormField
