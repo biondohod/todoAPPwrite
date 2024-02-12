@@ -18,6 +18,10 @@ import { createUserAccount } from "@/lib/appwrite/api";
 import { useAppSelector } from "@/lib/redux/store";
 import { renderButton } from "@/utils/utils";
 
+/**
+ * Sign Up Form component.
+ * Renders a form for user sign up.
+ */
 const SignUpForm = () => {
   const { isLoading } = useAppSelector((state) => state.auth);
   const form = useForm<z.infer<typeof signUpValidation>>({

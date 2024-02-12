@@ -10,6 +10,10 @@ import { useAppSelector } from "./lib/redux/store";
 import AuthProvider from "./components/AuthProvider/AuthProvider";
 import useAuth from "./hooks/useAuth";
 
+/**
+ * The main component of the application.
+ * Renders the entire application layout and routes.
+ */
 function App() {
   const { isAuthorized } = useAppSelector((state) => state.auth);
   useAuth();

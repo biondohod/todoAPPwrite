@@ -4,6 +4,9 @@ import { setAuthorized } from "@/lib/redux/auth/authSlice";
 import { useAppDispatch } from "@/lib/redux/store";
 import { useEffect } from "react";
 
+/**
+ * Custom hook for handling authentication.
+ */
 const useAuth = () => {
   const dispatch = useAppDispatch();
 

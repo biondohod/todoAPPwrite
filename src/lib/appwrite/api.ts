@@ -4,6 +4,12 @@ import { account } from "./config";
 import { logIn } from "../redux/auth/authSlice";
 import { createErrorToast } from "@/utils/utils";
 
+/**
+ * Creates a user account.
+ * 
+ * @param user - The user object containing the user's information.
+ * @returns A promise that resolves to the newly created account.
+ */
 export async function createUserAccount(user: INewUser) {
   try {
     const newAccount = await account.create(
@@ -31,6 +37,10 @@ export async function logOutUser() {
   await account.deleteSession("current");
 }
 
+/**
+ * Checks if the user is currently logged in.
+ * @returns {Promise<boolean>} A promise that resolves to true if the user is logged in, or false if not.
+ */
 export async function isLoggedIn() {
   try {
     await account.get();

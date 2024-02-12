@@ -1,5 +1,14 @@
 import { z } from "zod"
 
+/**
+ * Validates the sign-up and in data.
+ * @param {object} data - The sign-up data to be validated.
+ * @param {string} data.name - The name of the user. Used only for sign-up
+ * @param {string} data.email - The email address of the user. Used for sign-up and sign-in
+ * @param {string} data.password - The password of the user. Used for sign-up and sign-in
+ * @param {string} data.confirmPassword - The confirmation password of the user. Used only for sign-up
+ * @returns {void}
+ */
 export const signUpValidation = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",

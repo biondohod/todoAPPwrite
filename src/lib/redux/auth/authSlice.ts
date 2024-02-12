@@ -9,6 +9,17 @@ const initialState: authState = {
   isError: null,
 };
 
+/**
+ * Redux slice for managing authentication state.
+ *
+ * @remarks
+ * This slice handles actions related to authentication, such as setting the authorized state, logging in, and logging out.
+ *
+ * @param name - The name of the slice.
+ * @param initialState - The initial state of the slice.
+ * @param reducers - The reducer functions for the slice.
+ * @param extraReducers - Additional reducer functions for handling extra actions.
+ */
 const authSlice = createSlice({
   name: "auth",
   initialState,

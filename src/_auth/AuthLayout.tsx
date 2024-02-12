@@ -1,6 +1,11 @@
 import { useAppSelector } from "@/lib/redux/store";
 import { Navigate, Outlet } from "react-router-dom";
 
+/**
+ * Renders the authentication layout.
+ * If the user is authorized, it navigates to the home page.
+ * Otherwise, it displays the child components within a section and an image background.
+ */
 const AuthLayout = () => {
   const isAuthorized = useAppSelector((state) => state.auth.isAuthorized);
 

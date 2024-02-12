@@ -18,6 +18,11 @@ import { renderButton } from "@/utils/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { logIn } from "@/lib/redux/auth/authSlice";
 
+/**
+ * Sign in form component.
+ * Renders a form for users to sign in with their email and password.
+ * Uses form validation and dispatches a login action when the form is submitted.
+ */
 const SignInForm = () => {
   const { isLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
