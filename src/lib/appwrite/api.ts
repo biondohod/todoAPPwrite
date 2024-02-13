@@ -41,7 +41,7 @@ export async function logOutUser() {
  * Checks if the user is currently logged in.
  * @returns {Promise<boolean>} A promise that resolves to true if the user is logged in, or false if not.
  */
-export async function isLoggedIn() {
+export async function isLoggedIn(): Promise<boolean> {
   try {
     await account.get();
     return true;
