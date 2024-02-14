@@ -7,6 +7,7 @@ const initialState: authState = {
   isAuthorized: null,
   isLoading: false,
   isError: null,
+  email: null,
 };
 
 /**
@@ -27,6 +28,9 @@ const authSlice = createSlice({
     setAuthorized: (state, action: PayloadAction<boolean>) => {
       state.isAuthorized = action.payload;
     },
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -34,9 +38,11 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.isError = null;
       })
-      .addCase(logIn.fulfilled, (state) => {
+      .addCase(logIn.fulfilled, (state, action) => {
         state.isAuthorized = true;
         state.isLoading = false;
+        state.email = action.payload;
+        localStorage.setItem("email", action.payload);
         createSuccessToast(
           "Logged in successfully, redirecting to dashboard.",
           3000
@@ -53,6 +59,8 @@ const authSlice = createSlice({
       .addCase(logOut.fulfilled, (state) => {
         state.isAuthorized = false;
         state.isLoading = false;
+        state.email = null;
+        localStorage.setItem("email", "");
         createSuccessToast(
           "Logged out successfully, redirecting to log in page.",
           3000
@@ -70,9 +78,12 @@ export const logIn = createAsyncThunk(
   async (user: ILogInUser, { rejectWithValue }) => {
     try {
       await logInUser(user);
+      return user.email;
     } catch (error) {
       if (error instanceof Error) {
         createErrorToast(error.message);
+      } else {
+        createErrorToast();
       }
       return rejectWithValue(error);
     }
@@ -87,11 +98,13 @@ export const logOut = createAsyncThunk(
     } catch (error) {
       if (error instanceof Error) {
         createErrorToast(error.message);
+      } else {
+        createErrorToast();
       }
       return rejectWithValue(error);
     }
   }
 );
 
-export const { setAuthorized } = authSlice.actions;
+export const { setAuthorized, setEmail } = authSlice.actions;
 export const authReducer = authSlice.reducer;

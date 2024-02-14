@@ -1,12 +1,12 @@
-import { ID } from "appwrite";
-import { ILogInUser, INewUser } from "@/types";
-import { account } from "./config";
+import { ID, Query } from "appwrite";
+import { ILogInUser, INewUser, todoItem } from "@/types";
+import { account, database } from "./config";
 import { logIn } from "../redux/auth/authSlice";
-import { createErrorToast } from "@/utils/utils";
+import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 /**
  * Creates a user account.
- * 
+ *
  * @param user - The user object containing the user's information.
  * @returns A promise that resolves to the newly created account.
  */
@@ -48,4 +48,36 @@ export async function isLoggedIn(): Promise<boolean> {
   } catch (error) {
     return false;
   }
+}
+
+export async function addTodo(email: string, todo: string) {
+  try {
+    await database.createDocument(
+      import.meta.env.VITE_APPWRITE_DB_ID,
+      import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+      "unique()",
+      {
+        email: email,
+        todo: todo,
+      }
+    );
+    createSuccessToast("The task has been successfully added!");
+  } catch (error) {
+    if (error instanceof Error) {
+      createErrorToast(error.message);
+      console.log(await account.get());
+    } else {
+      createErrorToast();
+    }
+    console.log(error);
+  }
+}
+
+export async function getTodosList(email: string): Promise<todoItem[]> {
+  const response = await database.listDocuments(
+    import.meta.env.VITE_APPWRITE_DB_ID,
+    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    [Query.equal("email", email)]
+  );
+  return response.documents as unknown as todoItem[];
 }

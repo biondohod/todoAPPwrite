@@ -14,6 +14,13 @@ export type ILogInUser = {
   password: string;
 }
 
+export type todoItem = {
+  email: string;
+  todo: string;
+  $id: string;
+  $createdAt: string;
+}
+
 export type ErrorMessageProps = {
   message: string;
 };
@@ -23,10 +30,20 @@ export type AuthProviderProps = {
   isAuth: boolean | null;
 }
 
+export type TodoItemProps = {
+  todo: string,
+  createdAt: string;
+}
+
 export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
   isError: string | null;
+  email: string | null;
+}
+
+export interface todoState {
+  todosList: todoItem[] | null;
 }
 
 export interface loadingState {
