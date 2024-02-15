@@ -14,7 +14,7 @@ const AuthProvider: FC<AuthProviderProps> = ({isAuth, children}) => {
   if (isAuth !== null) {
     return children;
   }
-  return <Loader/>
+  return <Loader message="Please wait checking your authorization status"/>
 }
 
 export default AuthProvider

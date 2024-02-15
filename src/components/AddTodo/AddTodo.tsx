@@ -12,10 +12,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addTodoValidation } from "@/lib/validation";
-import { addTodo } from "@/lib/appwrite/api";
 import { createErrorToast } from "@/utils/utils";
 import { logOut } from "@/lib/redux/auth/authSlice";
 import { z } from "zod";
+import { addTodo } from "@/lib/redux/todo/todoSlice";
 
 const AddTodo = () => {
   const dispatch = useAppDispatch();
@@ -27,9 +27,14 @@ const AddTodo = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof addTodoValidation>) {
+  function addTodoHandler(values: z.infer<typeof addTodoValidation>) {
     if (email) {
-      addTodo(email, values.todo);
+      const data = {
+        email: email,
+        todo: values.todo
+      };
+
+      dispatch(addTodo(data));
       form.reset();
     } else {
       createErrorToast(
@@ -41,7 +46,7 @@ const AddTodo = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(addTodoHandler)}
         className="space-y-3 flex items-end gap-2"
       >
         <FormField

@@ -35,6 +35,12 @@ export type TodoItemProps = {
   createdAt: string;
 }
 
+export type LoaderProps = {
+  message: string;
+  loaderWidth?: number;
+  loaderHeight?: number;
+}
+
 export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
