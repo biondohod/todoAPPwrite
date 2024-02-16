@@ -4,7 +4,6 @@ import { todoItem } from "@/types";
 import { useEffect } from "react";
 import TodoItem from "./TodoItem";
 import { Skeleton } from "../ui/skeleton";
-import { Loader2 } from "lucide-react";
 import Loader from "../Loader/Loader";
 
 const TodoList = () => {

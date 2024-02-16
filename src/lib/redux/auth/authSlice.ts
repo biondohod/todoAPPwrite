@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ILogInUser, authState } from "@/types";
-import { logInUser, logOutUser } from "@/lib/appwrite/api";
+import { ILogInUser, INewUser, authState } from "@/types";
+import { createUserAccount, logInUser, logOutUser } from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: authState = {
@@ -30,10 +30,21 @@ const authSlice = createSlice({
     },
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(signUp.pending, (state) => {
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(signUp.fulfilled, (state) => {
+        state.isLoading = false;
+        createSuccessToast(
+          "Your account has been created successfully!",
+          3000
+        );
+      })
       .addCase(logIn.pending, (state) => {
         state.isLoading = true;
         state.isError = null;
@@ -72,6 +83,22 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const signUp = createAsyncThunk(
+  "auth/signUp",
+  async (user: INewUser, { rejectWithValue }) => {
+    try {
+      await createUserAccount(user);
+    } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      } else {
+        createErrorToast();
+      }
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const logIn = createAsyncThunk(
   "auth/logIn",
