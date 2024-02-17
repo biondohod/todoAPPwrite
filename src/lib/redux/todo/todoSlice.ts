@@ -1,10 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { todoItem, todoState } from "@/types";
-import { addTodoTask, getTodosList } from "@/lib/appwrite/api";
+import { addTodoTask, getTodosList, updateTodosList } from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: todoState = {
   todosList: null,
+  isLoading: false,
 };
 
 const todoSlice = createSlice({
@@ -20,17 +21,30 @@ const todoSlice = createSlice({
       .addCase(getTodos.fulfilled, (state, action) => {
         state.todosList = action.payload;
       })
+      .addCase(addTodo.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(addTodo.fulfilled, (state, action: PayloadAction<todoItem>) => {
-        console.log("action", action);
-        console.log("payload", action.payload);
         if (state.todosList) {
           state.todosList = [...state.todosList, action.payload];
         } else {
           state.todosList = [action.payload];
         }
-        createSuccessToast("The task has been successfully created")
-        console.log("state", state.todosList);
-      });
+        state.isLoading = false;
+        createSuccessToast("The task has been successfully created");
+      })
+      .addCase(addTodo.rejected, (state) => {
+        state.isLoading = false;
+      }).addCase(updateTodo.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateTodo.fulfilled, (state, action: PayloadAction<todoItem>) => {
+        state.isLoading = false;
+        createSuccessToast("The task has been successfully completed");
+      })
+      .addCase(updateTodo.rejected, (state) => {
+        state.isLoading = false;
+      });;
   },
 });
 
@@ -57,6 +71,25 @@ export const getTodos = createAsyncThunk(
   async (email: string, { rejectWithValue }) => {
     try {
       return await getTodosList(email);
+    } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      } else {
+        createErrorToast();
+      }
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const updateTodo = createAsyncThunk(
+  "todo/updateTodo",
+  async (
+    { id, isCompleted }: { id: string; isCompleted: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await updateTodosList(id, isCompleted);
     } catch (error) {
       if (error instanceof Error) {
         createErrorToast(error.message);

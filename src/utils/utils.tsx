@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { Bounce, toast } from "react-toastify";
+
 const BASE_ERROR_MESSAGE = 'Oops! Something went wrong. Please reaload the page and try again';
 const BASE_TIME_TO_CLOSE = 5000;
 /**
@@ -72,3 +73,39 @@ export const formatDate = (dateString: string) => {
 
   return `${day} ${month}, ${weekday}, ${hours}:${minutes}`;
 }
+
+
+// export const createPromiseToast = <T,>(
+//   promise: Promise<T>, 
+//   {
+//     pendingText
+//     successText,
+//     errorText,
+//     position,
+//   }
+//   ) => {
+//   toast.promise(
+//     promise,
+//     {
+//       pending: {
+//         render(){
+//           return pendingText
+//         },
+//         position: position
+//       },
+//       success: {
+//         render(){
+//           return successText
+//         },
+//         position: position
+//       },
+//       error: {
+//         render({data}){
+//           // When the promise reject, data will contains the error
+//           return <MyErrorComponent message={data.message} />
+//         }, 
+//         position: position
+//       }
+//     }
+//   )
+// }

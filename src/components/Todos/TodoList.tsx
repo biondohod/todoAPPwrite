@@ -18,11 +18,9 @@ const TodoList = () => {
 
   const renderTodosList = () => {
     if (todosList?.length) {
-      console.log(todosList);
       return todosList.map((todo: todoItem) => {
-        console.log(todo);
         return (
-          <TodoItem key={todo.$id} todo={todo.todo} createdAt={todo.$createdAt}/>
+          <TodoItem key={todo.$id} todo={todo.todo} createdAt={todo.$createdAt} isCompleted={todo.isCompleted} id={todo.$id}/>
         );
       });
     }
@@ -39,10 +37,14 @@ const TodoList = () => {
     if (todosList === null) {
       return <Loader message="Your tasks are loading..." loaderHeight={60} loaderWidth={60}/>
     }
-    if (todosList.length) {
-      return `Your tasks (${todosList.length})`
+    if (todosList.length === 0) {
+      return "No tasks yet. Add one above"
+      
     }
-    return "No tasks yet. Add one above"
+    if (todosList.length === 1) {
+      return "Need to do only one task"
+    }
+    return `Need to do ${todosList.length} tasks`
   }
   return (
     <section className="mt-8 flex flex-col items-center">

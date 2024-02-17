@@ -6,7 +6,6 @@ import { createErrorToast, createSuccessToast } from "@/utils/utils";
 const initialState: authState = {
   isAuthorized: null,
   isLoading: false,
-  isError: null,
   email: null,
 };
 
@@ -36,7 +35,6 @@ const authSlice = createSlice({
     builder
       .addCase(signUp.pending, (state) => {
         state.isLoading = true;
-        state.isError = null;
       })
       .addCase(signUp.fulfilled, (state) => {
         state.isLoading = false;
@@ -47,7 +45,6 @@ const authSlice = createSlice({
       })
       .addCase(logIn.pending, (state) => {
         state.isLoading = true;
-        state.isError = null;
       })
       .addCase(logIn.fulfilled, (state, action) => {
         state.isAuthorized = true;
@@ -61,11 +58,9 @@ const authSlice = createSlice({
       })
       .addCase(logIn.rejected, (state) => {
         state.isLoading = false;
-        state.isError = "Error logging in, please try again.";
       })
       .addCase(logOut.pending, (state) => {
         state.isLoading = true;
-        state.isError = null;
       })
       .addCase(logOut.fulfilled, (state) => {
         state.isAuthorized = false;
@@ -79,7 +74,6 @@ const authSlice = createSlice({
       })
       .addCase(logOut.rejected, (state) => {
         state.isLoading = false;
-        state.isError = "Error logging out, please try again.";
       });
   },
 });

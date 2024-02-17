@@ -54,6 +54,7 @@ export async function addTodoTask(email: string, todo: string): Promise<todoItem
     todo: todo,
     $id: response.$id,
     $createdAt: response.$createdAt,
+    isCompleted: response.isCompleted,
   };
 }
 
@@ -68,5 +69,22 @@ export async function getTodosList(email: string): Promise<todoItem[]> {
     todo: doc.todo,
     $id: doc.$id,
     $createdAt: doc.$createdAt,
+    isCompleted: doc.isCompleted,
   }));
+}
+
+export async function updateTodosList(id: string, isCompleted: boolean): Promise<todoItem> {
+  const response = await database.updateDocument(
+    import.meta.env.VITE_APPWRITE_DB_ID,
+    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    id,
+    {isCompleted: isCompleted}
+  );
+  return {
+    email: response.email,
+    todo: response.todo,
+    $id: response.$id,
+    $createdAt: response.$createdAt,
+    isCompleted: response.isCompleted,
+  };
 }

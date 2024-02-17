@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addTodoValidation } from "@/lib/validation";
-import { createErrorToast } from "@/utils/utils";
+import { createErrorToast, renderButton } from "@/utils/utils";
 import { logOut } from "@/lib/redux/auth/authSlice";
 import { z } from "zod";
 import { addTodo } from "@/lib/redux/todo/todoSlice";
@@ -20,6 +20,7 @@ import { addTodo } from "@/lib/redux/todo/todoSlice";
 const AddTodo = () => {
   const dispatch = useAppDispatch();
   const { email } = useAppSelector((state) => state.auth);
+  const {isLoading} = useAppSelector((state) => state.todo);
   const form = useForm<z.infer<typeof addTodoValidation>>({
     resolver: zodResolver(addTodoValidation),
     defaultValues: {
@@ -34,7 +35,7 @@ const AddTodo = () => {
         todo: values.todo
       };
 
-      dispatch(addTodo(data));
+      const x = dispatch(addTodo(data));
       form.reset();
     } else {
       createErrorToast(
@@ -70,7 +71,7 @@ const AddTodo = () => {
           )}
         />
         <Button className="text-xl p-4 py-6 shadow-inner" type="submit">
-          Add task
+          {renderButton(isLoading, "Add task")}
         </Button>
       </form>
     </Form>

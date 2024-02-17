@@ -17,6 +17,7 @@ export type ILogInUser = {
 export type todoItem = {
   email: string;
   todo: string;
+  isCompleted: boolean;
   $id: string;
   $createdAt: string;
 }
@@ -33,6 +34,8 @@ export type AuthProviderProps = {
 export type TodoItemProps = {
   todo: string,
   createdAt: string;
+  isCompleted: boolean;
+  id: string;
 }
 
 export type LoaderProps = {
@@ -44,12 +47,12 @@ export type LoaderProps = {
 export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
-  isError: string | null;
   email: string | null;
 }
 
 export interface todoState {
   todosList: todoItem[] | null;
+  isLoading: boolean;
 }
 
 export interface loadingState {
