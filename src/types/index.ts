@@ -14,13 +14,19 @@ export type ILogInUser = {
   password: string;
 }
 
-export type todoItem = {
+export type TodoItem = {
   email: string;
   todo: string;
   isCompleted: boolean;
   $id: string;
   $createdAt: string;
 }
+
+export type TodoItemsList = {
+  [itemId: string]: TodoItem
+}
+
+export type TitleType = "toComplete" | "completed";
 
 export type ErrorMessageProps = {
   message: string;
@@ -50,9 +56,12 @@ export interface authState {
   email: string | null;
 }
 
+
 export interface todoState {
-  todosList: todoItem[] | null;
+  todosList: TodoItemsList | null;
   isLoading: boolean;
+  toComplete: number;
+  completed: number
 }
 
 export interface loadingState {

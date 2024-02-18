@@ -1,50 +1,82 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { todoItem, todoState } from "@/types";
+import { TodoItem, todoState, TodoItemsList } from "@/types";
 import { addTodoTask, getTodosList, updateTodosList } from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: todoState = {
+  //make todoList an object like {TodoItemId: TodoItem}
   todosList: null,
   isLoading: false,
+  toComplete: 0,
+  completed: 0,
 };
 
 const todoSlice = createSlice({
   name: "todo",
   initialState,
   reducers: {
-    setTodosList: (state, action: PayloadAction<todoItem[]>) => {
+    setTodosList: (state, action: PayloadAction<TodoItemsList>) => {
       state.todosList = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getTodos.fulfilled, (state, action) => {
-        state.todosList = action.payload;
-      })
+      .addCase(
+        getTodos.fulfilled,
+        (state, action: PayloadAction<TodoItemsList>) => {
+          state.todosList = action.payload;
+          const [completedTasks, tasksToComplete] = Object.values(
+            action.payload
+          ).reduce(
+            ([completed, toComplete], todo) => {
+              if (todo.isCompleted) {
+                return [completed + 1, toComplete];
+              } else {
+                return [completed, toComplete + 1];
+              }
+            },
+            [0, 0]
+          );
+          state.toComplete = tasksToComplete;
+          state.completed = completedTasks;
+        }
+      )
       .addCase(addTodo.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(addTodo.fulfilled, (state, action: PayloadAction<todoItem>) => {
+      .addCase(addTodo.fulfilled, (state, action: PayloadAction<TodoItem>) => {
         if (state.todosList) {
-          state.todosList = [...state.todosList, action.payload];
-        } else {
-          state.todosList = [action.payload];
+          state.todosList[action.payload.$id] = action.payload;
+          state.isLoading = false;
+          createSuccessToast("The task has been successfully created");
+          state.toComplete = state.toComplete + 1;
         }
-        state.isLoading = false;
-        createSuccessToast("The task has been successfully created");
       })
       .addCase(addTodo.rejected, (state) => {
         state.isLoading = false;
-      }).addCase(updateTodo.pending, (state) => {
+      })
+      .addCase(updateTodo.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateTodo.fulfilled, (state, action: PayloadAction<todoItem>) => {
+      .addCase(updateTodo.fulfilled, (state, action) => {
         state.isLoading = false;
-        createSuccessToast("The task has been successfully completed");
+        const itemId = Object.keys(action.payload)[0];
+        if (state.todosList) {
+          state.todosList[itemId].isCompleted = action.payload[itemId].isCompleted;
+        }
+        if (action.payload[itemId].isCompleted) {
+          state.completed = state.completed + 1;
+          state.toComplete = state.toComplete - 1;
+          createSuccessToast("The task has been successfully completed");
+        } else {
+          state.completed = state.completed - 1;
+          state.toComplete = state.toComplete + 1;
+          createSuccessToast("The task has been marked as incomplete");
+        }
       })
       .addCase(updateTodo.rejected, (state) => {
         state.isLoading = false;
-      });;
+      });
   },
 });
 
