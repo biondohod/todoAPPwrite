@@ -1,12 +1,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ILogInUser, INewUser, authState } from "@/types";
-import { createUserAccount, logInUser, logOutUser } from "@/lib/appwrite/api";
+import { createUserAccount, logInUser, logOutUser, verifyUserEmail } from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: authState = {
   isAuthorized: null,
   isLoading: false,
   email: null,
+  isEmailVerified: null,
 };
 
 /**
@@ -30,6 +31,9 @@ const authSlice = createSlice({
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
+    setEmailVerified: ((state, action: PayloadAction<boolean>) => {
+      state.isEmailVerified = action.payload
+    })
   },
   extraReducers: (builder) => {
     builder
@@ -66,6 +70,7 @@ const authSlice = createSlice({
         state.isAuthorized = false;
         state.isLoading = false;
         state.email = null;
+        state.isEmailVerified = false;
         localStorage.setItem("email", "");
         createSuccessToast(
           "Logged out successfully, redirecting to log in page.",
@@ -73,6 +78,20 @@ const authSlice = createSlice({
         );
       })
       .addCase(logOut.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(verifyEmail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyEmail.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isEmailVerified = true;
+        createSuccessToast(
+          "Email has been succesfully verified.",
+          3000
+        );
+      })
+      .addCase(verifyEmail.rejected, (state) => {
         state.isLoading = false;
       });
   },
@@ -127,5 +146,21 @@ export const logOut = createAsyncThunk(
   }
 );
 
-export const { setAuthorized, setEmail } = authSlice.actions;
+export const verifyEmail = createAsyncThunk(
+  "auth/verifyEmail",
+  async ({secret, userId}: {secret: string, userId: string}, { rejectWithValue }) => {
+    try {
+      await verifyUserEmail(secret, userId);
+    } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      } else {
+        createErrorToast();
+      }
+      return rejectWithValue(error);
+    }
+  }
+)
+
+export const { setAuthorized, setEmail, setEmailVerified } = authSlice.actions;
 export const authReducer = authSlice.reducer;

@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthLayout from "./_auth/AuthLayout";
 import SignUpForm from "./_auth/forms/SignUpForm";
 import SignInForm from "./_auth/forms/SignInForm";
-import { Dashboard, Home } from "./_root/pages";
+import { Verifying, Dashboard, Verified } from "./_root/pages";
 import RootLayout from "./_root/RootLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,8 +32,9 @@ function App() {
               </Route>
               {/* Private Routes */}
               <Route element={<RootLayout />}>
-                <Route index element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route index element={<Dashboard />} />
+                <Route path="/verifying" element={<Verifying />} />
+                <Route path="/verified" element={<Verified />} />
               </Route>
             </Routes>
           </BrowserRouter>

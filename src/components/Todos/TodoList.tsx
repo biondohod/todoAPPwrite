@@ -55,7 +55,6 @@ const TodoList = () => {
       <>
         <Skeleton className="w-full h-[80px] rounded-2xl border-2 shadow" />
         <Skeleton className="w-full h-[80px] rounded-2xl border-2 shadow" />
-        <Skeleton className="w-full h-[80px] rounded-2xl border-2 shadow" />
       </>
     );
   };

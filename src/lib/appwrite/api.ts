@@ -1,6 +1,7 @@
 import { ID, Query } from "appwrite";
 import { ILogInUser, INewUser, TodoItem, TodoItemsList } from "@/types";
 import { account, database } from "./config";
+import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 /**
  * Creates a user account.
@@ -106,4 +107,20 @@ export async function deleteTodoFromList(id: string) {
     import.meta.env.VITE_APPWRITE_COLLECTION_ID,
     id
   );
+}
+
+export async function createEmailVerification() {
+  try {
+    await account.createVerification("http://localhost:5173/verified");
+    createSuccessToast("The message has been send! Please check your email.", 10000)
+  } catch(error) {
+    if(error instanceof Error) {
+      createErrorToast(error.message)
+    }
+    console.error(error);
+  }
+}
+
+export async function verifyUserEmail(secret: string, userId: string) {
+  await account.updateVerification(userId, secret);
 }

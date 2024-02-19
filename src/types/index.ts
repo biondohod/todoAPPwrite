@@ -45,7 +45,7 @@ export type TodoItemProps = {
 }
 
 export type LoaderProps = {
-  message: string;
+  message?: string;
   loaderWidth?: number;
   loaderHeight?: number;
 }
@@ -54,7 +54,7 @@ export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
   email: string | null;
-  isEmailVerified: boolean;
+  isEmailVerified: boolean | null;
 }
 
 

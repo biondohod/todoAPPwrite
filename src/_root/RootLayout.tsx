@@ -7,7 +7,7 @@ import { Navigate, Outlet } from "react-router-dom";
  * Root layout component that handles the rendering of the application's content based on the user's authorization status.
  */
 const RootLayout = () => {
-  const isAuthorized = useAppSelector((state) => state.auth.isAuthorized);
+  const {isAuthorized} = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   /**
@@ -17,24 +17,22 @@ const RootLayout = () => {
     dispatch(logOut());
   };
 
+  if (!isAuthorized) {
+    return <Navigate to="/sign-in" />;
+  }
+  
   return (
     <>
-      {isAuthorized === false ? (
-        <Navigate to="/sign-in" />
-      ) : (
-        <>
-          <Button
-            onClick={logOutHandler}
-            variant="destructive"
-            className="text-lg absolute top-2 right-2"
-          >
-            Log Out
-          </Button>
-          <section className="flex flex-1 flex-col py-10">
-            <Outlet />
-          </section>
-        </>
-      )}
+      <Button
+        onClick={logOutHandler}
+        variant="destructive"
+        className="text-lg absolute top-2 right-2"
+      >
+        Log Out
+      </Button>
+      <section className="flex flex-1 flex-col py-10">
+        <Outlet />
+      </section>
     </>
   );
 };
