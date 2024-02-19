@@ -81,7 +81,7 @@ const TodoList = () => {
         return `Need to do ${countOfTasks} tasks`;
       case "completed":
         if (countOfTasks === 0) {
-          return "No tasks completed yet";
+          return "";
         }
         if (countOfTasks === 1) {
           return "You've complete 1 task";

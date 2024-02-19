@@ -9,13 +9,13 @@ import { account, database } from "./config";
  * @returns A promise that resolves to the newly created account.
  */
 export async function createUserAccount(user: INewUser) {
-    const newAccount = await account.create(
-      ID.unique(),
-      user.email,
-      user.password,
-      user.name
-    );
-    return newAccount;
+  const newAccount = await account.create(
+    ID.unique(),
+    user.email,
+    user.password,
+    user.name
+  );
+  return newAccount;
 }
 
 export async function logInUser(user: ILogInUser) {
@@ -39,7 +39,10 @@ export async function isLoggedIn(): Promise<boolean> {
   }
 }
 
-export async function addTodoTask(email: string, todo: string): Promise<TodoItem> {
+export async function addTodoTask(
+  email: string,
+  todo: string
+): Promise<TodoItem> {
   const response = await database.createDocument(
     import.meta.env.VITE_APPWRITE_DB_ID,
     import.meta.env.VITE_APPWRITE_COLLECTION_ID,
@@ -76,20 +79,31 @@ export async function getTodosList(email: string): Promise<TodoItemsList> {
   }, {});
 }
 
-export async function updateTodosList(id: string, isCompleted: boolean): Promise<TodoItemsList> {
+export async function updateTodosList(
+  id: string,
+  isCompleted: boolean
+): Promise<TodoItemsList> {
   const response = await database.updateDocument(
     import.meta.env.VITE_APPWRITE_DB_ID,
     import.meta.env.VITE_APPWRITE_COLLECTION_ID,
     id,
-    {isCompleted: isCompleted}
+    { isCompleted: isCompleted }
   );
   return {
     [response.$id]: {
-    email: response.email,
-    todo: response.todo,
-    $id: response.$id,
-    $createdAt: response.$createdAt,
-    isCompleted: response.isCompleted,
-    }
+      email: response.email,
+      todo: response.todo,
+      $id: response.$id,
+      $createdAt: response.$createdAt,
+      isCompleted: response.isCompleted,
+    },
   };
+}
+
+export async function deleteTodoFromList(id: string) {
+  await database.deleteDocument(
+    import.meta.env.VITE_APPWRITE_DB_ID,
+    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    id
+  );
 }

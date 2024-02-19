@@ -54,12 +54,14 @@ export interface authState {
   isAuthorized: boolean | null;
   isLoading: boolean;
   email: string | null;
+  isEmailVerified: boolean;
 }
 
 
 export interface todoState {
   todosList: TodoItemsList | null;
   isLoading: boolean;
+  isError: boolean;
   toComplete: number;
   completed: number
 }

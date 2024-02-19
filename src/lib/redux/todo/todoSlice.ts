@@ -1,12 +1,18 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { TodoItem, todoState, TodoItemsList } from "@/types";
-import { addTodoTask, getTodosList, updateTodosList } from "@/lib/appwrite/api";
+import {
+  addTodoTask,
+  deleteTodoFromList,
+  getTodosList,
+  updateTodosList,
+} from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: todoState = {
   //make todoList an object like {TodoItemId: TodoItem}
   todosList: null,
   isLoading: false,
+  isError: false,
   toComplete: 0,
   completed: 0,
 };
@@ -21,6 +27,9 @@ const todoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getTodos.pending, (state) => {
+        state.isError = false;
+      })
       .addCase(
         getTodos.fulfilled,
         (state, action: PayloadAction<TodoItemsList>) => {
@@ -39,8 +48,12 @@ const todoSlice = createSlice({
           );
           state.toComplete = tasksToComplete;
           state.completed = completedTasks;
+          state.isError = false;
         }
       )
+      .addCase(getTodos.rejected, (state) => {
+        state.isError = true;
+      })
       .addCase(addTodo.pending, (state) => {
         state.isLoading = true;
       })
@@ -62,7 +75,8 @@ const todoSlice = createSlice({
         state.isLoading = false;
         const itemId = Object.keys(action.payload)[0];
         if (state.todosList) {
-          state.todosList[itemId].isCompleted = action.payload[itemId].isCompleted;
+          state.todosList[itemId].isCompleted =
+            action.payload[itemId].isCompleted;
         }
         if (action.payload[itemId].isCompleted) {
           state.completed = state.completed + 1;
@@ -75,6 +89,24 @@ const todoSlice = createSlice({
         }
       })
       .addCase(updateTodo.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteTodo.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteTodo.fulfilled, (state, action: PayloadAction<string>) => {
+        state.isLoading = false;
+        if (state.todosList) {
+          if (state.todosList[action.payload].isCompleted) {
+            state.completed = state.completed - 1;
+          } else {
+            state.toComplete = state.toComplete - 1;
+          }
+          delete state.todosList[action.payload];
+        }
+        createSuccessToast("The task has been successfully deleted");
+      })
+      .addCase(deleteTodo.rejected, (state) => {
         state.isLoading = false;
       });
   },
@@ -122,6 +154,23 @@ export const updateTodo = createAsyncThunk(
   ) => {
     try {
       return await updateTodosList(id, isCompleted);
+    } catch (error) {
+      if (error instanceof Error) {
+        createErrorToast(error.message);
+      } else {
+        createErrorToast();
+      }
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteTodo = createAsyncThunk(
+  "todo/deleteTodo",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await deleteTodoFromList(id);
+      return id;
     } catch (error) {
       if (error instanceof Error) {
         createErrorToast(error.message);

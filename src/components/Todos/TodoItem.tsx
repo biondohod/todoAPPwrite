@@ -5,21 +5,24 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { updateTodo } from "@/lib/redux/todo/todoSlice";
+import { deleteTodo, updateTodo } from "@/lib/redux/todo/todoSlice";
 
 const TodoItem: FC<TodoItemProps> = ({ createdAt, todo, isCompleted, id }) => {
   const dispatch = useAppDispatch()
   const {isLoading, todosList} = useAppSelector((state) => state.todo);
   let isCompletedTodo = isCompleted;
   useEffect(() => {
-    console.log("render");
     if (todosList) {
       isCompletedTodo = todosList[id].isCompleted
     }
-  }, [todosList, isCompletedTodo])
+  }, [todosList])
 
   const toggleCompletedHandler = () => {
     dispatch(updateTodo({id: id, isCompleted: !isCompletedTodo}));
+  }
+
+  const deleteTodoHandler = () => {
+    dispatch(deleteTodo(id));
   }
   
   return (
@@ -35,7 +38,7 @@ const TodoItem: FC<TodoItemProps> = ({ createdAt, todo, isCompleted, id }) => {
           )}
           <Label htmlFor="toggle-completed" className="text-lg">Completed</Label>
         </div>
-        <Button variant="destructive" className="text-lg" disabled={isLoading}>
+        <Button variant="destructive" className="text-lg" disabled={isLoading} onClick={deleteTodoHandler}>
           Delete
         </Button>
       </div>
