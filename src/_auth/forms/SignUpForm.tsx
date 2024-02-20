@@ -1,6 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { FC } from "react";
 import { z } from "zod";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { renderButton } from "@/utils/utils";
+import { logIn, signUp } from "@/lib/redux/auth/authSlice";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,16 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signUpValidation } from "@/lib/validation";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { renderButton } from "@/utils/utils";
-import { logIn, signUp } from "@/lib/redux/auth/authSlice";
 
-/**
- * Sign Up Form component.
- * Renders a form for user sign up.
- */
-const SignUpForm = () => {
+const SignUpForm: FC = () => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector((state) => state.auth);
   const form = useForm<z.infer<typeof signUpValidation>>({
@@ -35,9 +32,10 @@ const SignUpForm = () => {
     },
   });
 
-  function signUpHandler(values: z.infer<typeof signUpValidation>) {
-    dispatch(signUp(values)).then(() => {dispatch(logIn(values))})
-  }
+  const signUpHandler = async (values: z.infer<typeof signUpValidation>) => {
+    await dispatch(signUp(values));
+    dispatch(logIn(values));
+  };
 
   
 

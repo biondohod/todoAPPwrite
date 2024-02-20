@@ -48,6 +48,7 @@ export type LoaderProps = {
   message?: string;
   loaderWidth?: number;
   loaderHeight?: number;
+  fontSize?: string;
 }
 
 export interface authState {

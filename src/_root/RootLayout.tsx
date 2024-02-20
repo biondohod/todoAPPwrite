@@ -1,18 +1,21 @@
-import { Button } from "@/components/ui/button";
+import { FC } from "react";
+
+import { Navigate, Outlet } from "react-router-dom";
 import { logOut } from "@/lib/redux/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { Navigate, Outlet } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+
 
 /**
- * Root layout component that handles the rendering of the application's content based on the user's authorization status.
+ * Root layout component that renders the main layout of the application.
+ * If the user is not authorized, it redirects to the sign-in page.
+ * Otherwise, it displays the log out button and the content of the current route.
  */
-const RootLayout = () => {
-  const {isAuthorized} = useAppSelector((state) => state.auth);
+const RootLayout: FC = () => {
+  const { isAuthorized } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  /**
-   * Handles the logout action by dispatching the logOut action.
-   */
   const logOutHandler = async () => {
     dispatch(logOut());
   };
@@ -20,7 +23,7 @@ const RootLayout = () => {
   if (!isAuthorized) {
     return <Navigate to="/sign-in" />;
   }
-  
+
   return (
     <>
       <Button

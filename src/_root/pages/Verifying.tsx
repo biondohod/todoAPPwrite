@@ -1,36 +1,45 @@
-import { Button } from "@/components/ui/button";
-import { createEmailVerification } from "@/lib/appwrite/api";
-import { useAppSelector } from "@/lib/redux/store";
-import { Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 
-const Verifying = () => {
+import { Navigate } from "react-router-dom";
+import { useAppSelector } from "@/lib/redux/store";
+import { createEmailVerification } from "@/lib/appwrite/api";
+
+import { Button } from "@/components/ui/button";
+
+/**
+ * Verifying component for email verification.
+ * 
+ * Renders a message and a button to send a verification email.
+ * Displays a countdown timer for sending a new verification link.
+ */
+const Verifying: FC = () => {
   const { email, isEmailVerified } = useAppSelector((state) => state.auth);
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
 
   useEffect(() => {
-    if (!timeLeft) {
-      setButtonDisabled(false);
-      return;
-    }
-
     const intervalId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
+      setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  }, []);
 
-  if (isEmailVerified) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setButtonDisabled(false);
+    }
+  }, [timeLeft]);
 
   const onVerifyingHandler = () => {
     setButtonDisabled(true);
     createEmailVerification();
     setTimeLeft(60);
   };
+
+  if (isEmailVerified) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

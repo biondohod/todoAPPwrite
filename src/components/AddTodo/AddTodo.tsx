@@ -1,3 +1,14 @@
+import { FC } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { addTodo } from "@/lib/redux/todo/todoSlice";
+import { logOut } from "@/lib/redux/auth/authSlice";
+import { addTodoValidation } from "@/lib/validation";
+import { createErrorToast, renderButton } from "@/utils/utils";
+
 import {
   Form,
   FormControl,
@@ -8,19 +19,14 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { addTodoValidation } from "@/lib/validation";
-import { createErrorToast, renderButton } from "@/utils/utils";
-import { logOut } from "@/lib/redux/auth/authSlice";
-import { z } from "zod";
-import { addTodo } from "@/lib/redux/todo/todoSlice";
 
-const AddTodo = () => {
+/**
+ * Component with form for adding a new todo.
+ */
+const AddTodo: FC = () => {
   const dispatch = useAppDispatch();
   const { email } = useAppSelector((state) => state.auth);
-  const {isLoading} = useAppSelector((state) => state.todo);
+  const { isLoading } = useAppSelector((state) => state.todo);
   const form = useForm<z.infer<typeof addTodoValidation>>({
     resolver: zodResolver(addTodoValidation),
     defaultValues: {
@@ -28,22 +34,24 @@ const AddTodo = () => {
     },
   });
 
-  function addTodoHandler(values: z.infer<typeof addTodoValidation>) {
-    if (email) {
-      const data = {
-        email: email,
-        todo: values.todo
-      };
-
-      const x = dispatch(addTodo(data));
-      form.reset();
-    } else {
+  const addTodoHandler = async (values: z.infer<typeof addTodoValidation>) => {
+    if (!email) {
       createErrorToast(
         "Oops! There's a problem. Please, log in into your account again."
       );
-      dispatch(logOut());
+      await dispatch(logOut());
+      return;
     }
+
+    const data = {
+      email,
+      todo: values.todo,
+    };
+
+    await dispatch(addTodo(data));
+    form.reset();
   }
+
   return (
     <Form {...form}>
       <form

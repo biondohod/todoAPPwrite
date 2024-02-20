@@ -1,6 +1,8 @@
+import { FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,17 +15,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signInValidation } from "@/lib/validation";
-import { Link } from "react-router-dom";
 import { renderButton } from "@/utils/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { logIn } from "@/lib/redux/auth/authSlice";
 
-/**
- * Sign in form component.
- * Renders a form for users to sign in with their email and password.
- * Uses form validation and dispatches a login action when the form is submitted.
- */
-const SignInForm = () => {
+
+const SignInForm: FC = () => {
   const { isLoading } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const form = useForm<z.infer<typeof signInValidation>>({
@@ -34,9 +31,9 @@ const SignInForm = () => {
     },
   });
 
-  function logInHandler(values: z.infer<typeof signInValidation>) {
-    dispatch(logIn(values));
-  }
+  const logInHandler = async (values: z.infer<typeof signInValidation>) => {
+    await dispatch(logIn(values));
+  };
 
   return (
     <>

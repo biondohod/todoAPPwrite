@@ -1,56 +1,58 @@
+import { FC, useEffect } from "react";
+
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { getTodos } from "@/lib/redux/todo/todoSlice";
 import { TitleType, TodoItem as TodoItemType } from "@/types";
-import { useEffect } from "react";
+
 import TodoItem from "./TodoItem";
 import { Skeleton } from "../ui/skeleton";
 import Loader from "../Loader/Loader";
 
-const TodoList = () => {
+/**
+ * Renders a list of todos, divided into two sections: "toComplete" and "completed".
+ *
+ * Fetches todos from the server based on the user's email.
+ *
+ * Displays a loading message while fetching todos.
+ *
+ * Renders a skeleton UI if todos are still loading.
+ */
+
+const TodoList: FC = () => {
   const dispatch = useAppDispatch();
   const { email } = useAppSelector((state) => state.auth);
   const { todosList, completed, toComplete } = useAppSelector(
     (state) => state.todo
   );
+
   useEffect(() => {
     if (email) {
       dispatch(getTodos(email));
     }
-  }, []);
+  }, [dispatch, email]);
 
+  /**
+   * Renders the list of todos based on the completion status.
+   * @param isCompletedList - Indicates whether the list should display completed or incomplete todos.
+   * @returns The rendered list of todos.
+   */
   const renderTodosList = (isCompletedList: boolean) => {
     if (todosList !== null) {
-      if (isCompletedList && completed > 0) {
-        return Object.values(todosList).map((todo: TodoItemType) => {
-          if (todo.isCompleted) {
-            return (
-              <TodoItem
-                key={todo.$id}
-                todo={todo.todo}
-                createdAt={todo.$createdAt}
-                isCompleted={todo.isCompleted}
-                id={todo.$id}
-              />
-            );
-          }
-        });
-      } else if (!isCompletedList && toComplete > 0) {
-        return Object.values(todosList).map((todo: TodoItemType) => {
-          if (!todo.isCompleted) {
-            return (
-              <TodoItem
-                key={todo.$id}
-                todo={todo.todo}
-                createdAt={todo.$createdAt}
-                isCompleted={todo.isCompleted}
-                id={todo.$id}
-              />
-            );
-          }
-        });
-      }
-      return <></>
+      const filteredTodos = Object.values(todosList).filter(
+        (todo: TodoItemType) => todo.isCompleted === isCompletedList
+      );
+
+      return filteredTodos.map((todo: TodoItemType) => (
+        <TodoItem
+          key={todo.$id}
+          todo={todo.todo}
+          createdAt={todo.$createdAt}
+          isCompleted={todo.isCompleted}
+          id={todo.$id}
+        />
+      ));
     }
+
     return (
       <>
         <Skeleton className="w-full h-[80px] rounded-2xl border-2 shadow" />
@@ -59,6 +61,12 @@ const TodoList = () => {
     );
   };
 
+  /**
+   * Renders the title based on the title type and count of tasks.
+   * @param titleType - The type of title to render. Should be "toComplete" or "completed"
+   * @param countOfTasks - The number of tasks.
+   * @returns The rendered title.
+   */
   const renderTitle = (titleType: TitleType, countOfTasks: number) => {
     if (todosList === null) {
       return (
@@ -69,6 +77,7 @@ const TodoList = () => {
         />
       );
     }
+
     switch (titleType) {
       case "toComplete":
         if (countOfTasks === 0) {
@@ -83,13 +92,14 @@ const TodoList = () => {
           return "";
         }
         if (countOfTasks === 1) {
-          return "You've complete 1 task";
+          return "You've completed 1 task";
         }
-        return `You've complete ${countOfTasks} tasks`;
+        return `You've completed ${countOfTasks} tasks`;
       default:
         return `Total tasks: ${countOfTasks}`;
     }
   };
+
   return (
     <>
       <section className="mt-8 flex flex-col items-center">

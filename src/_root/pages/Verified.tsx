@@ -1,21 +1,26 @@
-import Loader from "@/components/Loader/Loader";
-import { verifyEmail } from "@/lib/redux/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
-import { createErrorToast } from "@/utils/utils";
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, FC } from "react";
 
-const Verified = () => {
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { verifyEmail } from "@/lib/redux/auth/authSlice";
+import { createErrorToast } from "@/utils/utils";
+
+import Loader from "@/components/Loader/Loader";
+
+/**
+ * Component for displaying the verification status of an email.
+ */
+const Verified: FC = () => {
   const [params] = useSearchParams();
-  const secret = params.get("secret");
-  const userId = params.get("userId");
+  const secret: string | null = params.get("secret");
+  const userId: string | null = params.get("userId");
   const dispatch = useAppDispatch();
   const { isLoading, isEmailVerified } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (secret && userId) {
-      dispatch(verifyEmail({secret: secret, userId: userId}));
+      dispatch(verifyEmail({ secret, userId }));
     } else {
       navigate("/verifying");
       createErrorToast("Invalid user data. Please try again.");
@@ -24,11 +29,12 @@ const Verified = () => {
 
   useEffect(() => {
     if (isEmailVerified) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         navigate("/");
       }, 3000);
+      return () => clearTimeout(timeout);
     }
-  }, [isEmailVerified]);
+  }, [isEmailVerified, navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
