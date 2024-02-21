@@ -12,7 +12,7 @@ export type INewUser = {
 export type ILogInUser = {
   email: string;
   password: string;
-}
+};
 
 export type TodoItem = {
   email: string;
@@ -20,11 +20,11 @@ export type TodoItem = {
   isCompleted: boolean;
   $id: string;
   $createdAt: string;
-}
+};
 
 export type TodoItemsList = {
-  [itemId: string]: TodoItem
-}
+  [itemId: string]: TodoItem;
+};
 
 export type TitleType = "toComplete" | "completed";
 
@@ -35,21 +35,21 @@ export type ErrorMessageProps = {
 export type AuthProviderProps = {
   children: JSX.Element;
   isAuth: boolean | null;
-}
+};
 
 export type TodoItemProps = {
-  todo: string,
+  todo: string;
   createdAt: string;
   isCompleted: boolean;
   id: string;
-}
+};
 
 export type LoaderProps = {
   message?: string;
   loaderWidth?: number;
   loaderHeight?: number;
   fontSize?: string;
-}
+};
 
 export interface authState {
   isAuthorized: boolean | null;
@@ -58,16 +58,14 @@ export interface authState {
   isEmailVerified: boolean | null;
 }
 
-
 export interface todoState {
   todosList: TodoItemsList | null;
   isLoading: boolean;
   isError: boolean;
   toComplete: number;
-  completed: number
+  completed: number;
 }
 
 export interface loadingState {
   isLoading: boolean;
 }
-

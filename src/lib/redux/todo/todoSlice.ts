@@ -9,7 +9,6 @@ import {
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: todoState = {
-  //make todoList an object like {TodoItemId: TodoItem}
   todosList: null,
   isLoading: false,
   isError: false,
@@ -17,6 +16,9 @@ const initialState: todoState = {
   completed: 0,
 };
 
+/**
+ * Represents the Redux slice for managing todo items.
+ */
 const todoSlice = createSlice({
   name: "todo",
   initialState,
@@ -62,7 +64,7 @@ const todoSlice = createSlice({
           state.todosList[action.payload.$id] = action.payload;
           state.isLoading = false;
           createSuccessToast("The task has been successfully created");
-          state.toComplete = state.toComplete + 1;
+          state.toComplete++;
         }
       })
       .addCase(addTodo.rejected, (state) => {
@@ -79,12 +81,12 @@ const todoSlice = createSlice({
             action.payload[itemId].isCompleted;
         }
         if (action.payload[itemId].isCompleted) {
-          state.completed = state.completed + 1;
-          state.toComplete = state.toComplete - 1;
+          state.completed++;
+          state.toComplete--;
           createSuccessToast("The task has been successfully completed");
         } else {
-          state.completed = state.completed - 1;
-          state.toComplete = state.toComplete + 1;
+          state.completed--;
+          state.toComplete++;
           createSuccessToast("The task has been marked as incomplete");
         }
       })
@@ -98,9 +100,9 @@ const todoSlice = createSlice({
         state.isLoading = false;
         if (state.todosList) {
           if (state.todosList[action.payload].isCompleted) {
-            state.completed = state.completed - 1;
+            state.completed--;
           } else {
-            state.toComplete = state.toComplete - 1;
+            state.toComplete--;
           }
           delete state.todosList[action.payload];
         }
@@ -112,6 +114,13 @@ const todoSlice = createSlice({
   },
 });
 
+/**
+ * Adds a new todo.
+ *
+ * @param email - The email of the user adding the todo.
+ * @param todo - The content of the todo.
+ * @returns A promise that resolves to the added todo or rejects with an error.
+ */
 export const addTodo = createAsyncThunk(
   "todo/addTodo",
   async (
@@ -130,6 +139,13 @@ export const addTodo = createAsyncThunk(
     }
   }
 );
+
+/**
+ * Retrieves the list of todos for a given email.
+ *
+ * @param email - The email of the user.
+ * @returns A promise that resolves to the list of todos.
+ */
 export const getTodos = createAsyncThunk(
   "todo/getTodos",
   async (email: string, { rejectWithValue }) => {
@@ -146,6 +162,13 @@ export const getTodos = createAsyncThunk(
   }
 );
 
+/**
+ * Updates a todo item asynchronously.
+ *
+ * @param id - The ID of the todo item to update.
+ * @param isCompleted - The new completion status of the todo item.
+ * @returns A promise that resolves to the updated todo item.
+ */
 export const updateTodo = createAsyncThunk(
   "todo/updateTodo",
   async (
@@ -165,6 +188,12 @@ export const updateTodo = createAsyncThunk(
   }
 );
 
+/**
+ * Deletes a todo item asynchronously.
+ *
+ * @param id - The ID of the todo item to delete.
+ * @returns A promise that resolves to the ID of the deleted todo item.
+ */
 export const deleteTodo = createAsyncThunk(
   "todo/deleteTodo",
   async (id: string, { rejectWithValue }) => {

@@ -3,11 +3,14 @@ import { ILogInUser, INewUser, TodoItem, TodoItemsList } from "@/types";
 import { account, database } from "./config";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
+const EMAIL_VERIFICATION_URL = "https://biondohod.github.io/"
+// Use this const if you're using npm run dev. don't forget to change port
+// const EMAIL_VERIFICATION_URL = "http://localhost:5173/"
+
 /**
- * Creates a user account.
- *
+ * Creates a new user account.
  * @param user - The user object containing the user's information.
- * @returns A promise that resolves to the newly created account.
+ * @returns The newly created user account.
  */
 export async function createUserAccount(user: INewUser) {
   const newAccount = await account.create(
@@ -19,17 +22,54 @@ export async function createUserAccount(user: INewUser) {
   return newAccount;
 }
 
+/**
+ * Logs in a user with the provided email and password.
+ * @param user - The user object containing the email and password.
+ * @returns A promise that resolves when the user is successfully logged in.
+ */
 export async function logInUser(user: ILogInUser) {
   await account.createEmailSession(user.email, user.password);
 }
 
+/**
+ * Logs out the current user by deleting the session.
+ */
 export async function logOutUser() {
   await account.deleteSession("current");
 }
 
 /**
+ * Creates an email verification for the current user.
+ * @returns A Promise that resolves when the email verification is created.
+ */
+export async function createEmailVerification() {
+  try {
+    await account.createVerification(`${EMAIL_VERIFICATION_URL}verified`);
+    createSuccessToast(
+      "The message has been sent! Please check your email.",
+      10000
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      createErrorToast(error.message);
+    }
+    console.error(error);
+  }
+}
+
+/**
+ * Verifies the user's email by updating the verification status in the account.
+ * @param secret - The secret code for email verification.
+ * @param userId - The ID of the user whose email is being verified.
+ */
+export async function verifyUserEmail(secret: string, userId: string) {
+  await account.updateVerification(userId, secret);
+}
+
+
+/**
  * Checks if the user is currently logged in.
- * @returns {Promise<boolean>} A promise that resolves to true if the user is logged in, or false if not.
+ * @returns A Promise that resolves to a boolean indicating whether the user is logged in or not.
  */
 export async function isLoggedIn(): Promise<boolean> {
   try {
@@ -40,6 +80,13 @@ export async function isLoggedIn(): Promise<boolean> {
   }
 }
 
+/**
+ * Adds a new todo task for a specific user.
+ *
+ * @param email - The email of the user.
+ * @param todo - The todo task to be added.
+ * @returns A Promise that resolves to a TodoItem object representing the added task.
+ */
 export async function addTodoTask(
   email: string,
   todo: string
@@ -62,24 +109,32 @@ export async function addTodoTask(
   };
 }
 
+/**
+ * Retrieves a list of todo items for a given email.
+ * @param email - The email of the user.
+ * @returns A promise that resolves to a TodoItemsList object.
+ */
 export async function getTodosList(email: string): Promise<TodoItemsList> {
   const response = await database.listDocuments(
     import.meta.env.VITE_APPWRITE_DB_ID,
     import.meta.env.VITE_APPWRITE_COLLECTION_ID,
     [Query.equal("email", email)]
   );
+
   return response.documents.reduce((obj: TodoItemsList, doc) => {
-    obj[doc.$id] = {
-      email: doc.email,
-      todo: doc.todo,
-      $id: doc.$id,
-      $createdAt: doc.$createdAt,
-      isCompleted: doc.isCompleted,
-    };
+    const { email, todo, $id, $createdAt, isCompleted } = doc;
+    obj[$id] = { email, todo, $id, $createdAt, isCompleted };
     return obj;
   }, {});
 }
 
+/**
+ * Updates a todo item in the database.
+ * 
+ * @param id - The ID of the todo item to update.
+ * @param isCompleted - The new completion status of the todo item.
+ * @returns A Promise that resolves to the updated todo item.
+ */
 export async function updateTodosList(
   id: string,
   isCompleted: boolean
@@ -88,19 +143,19 @@ export async function updateTodosList(
     import.meta.env.VITE_APPWRITE_DB_ID,
     import.meta.env.VITE_APPWRITE_COLLECTION_ID,
     id,
-    { isCompleted: isCompleted }
+    { isCompleted }
   );
+  const { email, todo, $id, $createdAt, isCompleted: updatedIsCompleted } = response;
   return {
-    [response.$id]: {
-      email: response.email,
-      todo: response.todo,
-      $id: response.$id,
-      $createdAt: response.$createdAt,
-      isCompleted: response.isCompleted,
-    },
+    [$id]: { email, todo, $id, $createdAt, isCompleted: updatedIsCompleted },
   };
 }
 
+/**
+ * Deletes a todo from the list.
+ * @param id - The ID of the todo to delete.
+ * @returns A promise that resolves when the todo is successfully deleted.
+ */
 export async function deleteTodoFromList(id: string) {
   await database.deleteDocument(
     import.meta.env.VITE_APPWRITE_DB_ID,
@@ -109,18 +164,3 @@ export async function deleteTodoFromList(id: string) {
   );
 }
 
-export async function createEmailVerification() {
-  try {
-    await account.createVerification("http://localhost:5173/verified");
-    createSuccessToast("The message has been send! Please check your email.", 10000)
-  } catch(error) {
-    if(error instanceof Error) {
-      createErrorToast(error.message)
-    }
-    console.error(error);
-  }
-}
-
-export async function verifyUserEmail(secret: string, userId: string) {
-  await account.updateVerification(userId, secret);
-}

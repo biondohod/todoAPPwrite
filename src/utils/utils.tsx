@@ -1,14 +1,19 @@
 import { Loader2 } from "lucide-react";
 import { Bounce, toast } from "react-toastify";
 
-const BASE_ERROR_MESSAGE = 'Oops! Something went wrong. Please reaload the page and try again';
+const BASE_ERROR_MESSAGE =
+  "Oops! Something went wrong. Please reaload the page and try again";
 const BASE_TIME_TO_CLOSE = 5000;
+
 /**
  * Creates an error toast notification.
  * @param message - The message to display in the toast. Default is Oops! Something went wrong. Please reaload the page and try again
  * @param timeToClose - The time in milliseconds before the toast automatically closes. Default is 5000ms.
  */
-export const createErrorToast = (message: string = BASE_ERROR_MESSAGE, timeToClose: number = BASE_TIME_TO_CLOSE) => {
+export const createErrorToast = (
+  message: string = BASE_ERROR_MESSAGE,
+  timeToClose: number = BASE_TIME_TO_CLOSE
+) => {
   toast.error(message, {
     position: "bottom-left",
     autoClose: timeToClose,
@@ -24,10 +29,13 @@ export const createErrorToast = (message: string = BASE_ERROR_MESSAGE, timeToClo
 
 /**
  * Creates a success toast notification.
- * @param message - The message to display in the toast. 
+ * @param message - The message to display in the toast.
  * @param timeToClose - The time in milliseconds before the toast automatically closes. Default is 5000ms.
  */
-export const createSuccessToast = (message: string, timeToClose: number = BASE_TIME_TO_CLOSE) => {
+export const createSuccessToast = (
+  message: string,
+  timeToClose: number = BASE_TIME_TO_CLOSE
+) => {
   toast.success(message, {
     position: "bottom-left",
     autoClose: timeToClose,
@@ -60,52 +68,20 @@ export const renderButton = (state: boolean, message: string) => {
   return message;
 };
 
-
+/**
+ * Formats a date string into a custom format.
+ * @param dateString - The date string to be formatted.
+ * @returns The formatted date string. Like "22 Jan, Wed, 15:47"
+ */
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  
+
   // Extract the parts of the date
-  const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+  const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
   const day = date.getDate();
-  const month = date.toLocaleDateString('en-US', { month: 'short' });
+  const month = date.toLocaleDateString("en-US", { month: "short" });
   const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, '0'); // pad with zero if minute is less than 10
+  const minutes = date.getMinutes().toString().padStart(2, "0"); // pad with zero if minute is less than 10
 
   return `${day} ${month}, ${weekday}, ${hours}:${minutes}`;
-}
-
-
-// export const createPromiseToast = <T,>(
-//   promise: Promise<T>, 
-//   {
-//     pendingText
-//     successText,
-//     errorText,
-//     position,
-//   }
-//   ) => {
-//   toast.promise(
-//     promise,
-//     {
-//       pending: {
-//         render(){
-//           return pendingText
-//         },
-//         position: position
-//       },
-//       success: {
-//         render(){
-//           return successText
-//         },
-//         position: position
-//       },
-//       error: {
-//         render({data}){
-//           // When the promise reject, data will contains the error
-//           return <MyErrorComponent message={data.message} />
-//         }, 
-//         position: position
-//       }
-//     }
-//   )
-// }
+};

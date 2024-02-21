@@ -1,6 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ILogInUser, INewUser, authState } from "@/types";
-import { createUserAccount, logInUser, logOutUser, verifyUserEmail } from "@/lib/appwrite/api";
+import {
+  createUserAccount,
+  logInUser,
+  logOutUser,
+  verifyUserEmail,
+} from "@/lib/appwrite/api";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
 
 const initialState: authState = {
@@ -11,15 +16,7 @@ const initialState: authState = {
 };
 
 /**
- * Redux slice for managing authentication state.
- *
- * @remarks
- * This slice handles actions related to authentication, such as setting the authorized state, logging in, and logging out.
- *
- * @param name - The name of the slice.
- * @param initialState - The initial state of the slice.
- * @param reducers - The reducer functions for the slice.
- * @param extraReducers - Additional reducer functions for handling extra actions.
+ * Represents the Redux slice for authentication.
  */
 const authSlice = createSlice({
   name: "auth",
@@ -31,9 +28,9 @@ const authSlice = createSlice({
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
-    setEmailVerified: ((state, action: PayloadAction<boolean>) => {
-      state.isEmailVerified = action.payload
-    })
+    setEmailVerified: (state, action: PayloadAction<boolean>) => {
+      state.isEmailVerified = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -42,10 +39,7 @@ const authSlice = createSlice({
       })
       .addCase(signUp.fulfilled, (state) => {
         state.isLoading = false;
-        createSuccessToast(
-          "Your account has been created successfully!",
-          3000
-        );
+        createSuccessToast("Your account has been created successfully!", 3000);
       })
       .addCase(logIn.pending, (state) => {
         state.isLoading = true;
@@ -86,10 +80,7 @@ const authSlice = createSlice({
       .addCase(verifyEmail.fulfilled, (state) => {
         state.isLoading = false;
         state.isEmailVerified = true;
-        createSuccessToast(
-          "Email has been succesfully verified.",
-          3000
-        );
+        createSuccessToast("Email has been succesfully verified.", 3000);
       })
       .addCase(verifyEmail.rejected, (state) => {
         state.isLoading = false;
@@ -97,6 +88,11 @@ const authSlice = createSlice({
   },
 });
 
+/**
+ * Creates a new user account by signing up.
+ * @param user - The user object containing the details of the new user.
+ * @returns A promise that resolves when the user account is successfully created.
+ */
 export const signUp = createAsyncThunk(
   "auth/signUp",
   async (user: INewUser, { rejectWithValue }) => {
@@ -113,6 +109,11 @@ export const signUp = createAsyncThunk(
   }
 );
 
+/**
+ * Logs in a user with the provided email and password.
+ * @param user - The user object containing the email and password.
+ * @returns A promise that resolves when the user is successfully logged in.
+ */
 export const logIn = createAsyncThunk(
   "auth/logIn",
   async (user: ILogInUser, { rejectWithValue }) => {
@@ -130,6 +131,10 @@ export const logIn = createAsyncThunk(
   }
 );
 
+/**
+ * Logs out the current user by deleting the session.
+ * @returns A promise that resolves when the user is successfully logged out.
+ */
 export const logOut = createAsyncThunk(
   "auth/logOut",
   async (_, { rejectWithValue }) => {
@@ -146,9 +151,19 @@ export const logOut = createAsyncThunk(
   }
 );
 
+/**
+ * Verifies the user's email using the provided secret and user ID.
+ *
+ * @param secret - The secret code for email verification.
+ * @param userId - The ID of the user to verify the email for.
+ * @returns A promise that resolves when the email is successfully verified.
+ */
 export const verifyEmail = createAsyncThunk(
   "auth/verifyEmail",
-  async ({secret, userId}: {secret: string, userId: string}, { rejectWithValue }) => {
+  async (
+    { secret, userId }: { secret: string; userId: string },
+    { rejectWithValue }
+  ) => {
     try {
       await verifyUserEmail(secret, userId);
     } catch (error) {
@@ -160,7 +175,7 @@ export const verifyEmail = createAsyncThunk(
       return rejectWithValue(error);
     }
   }
-)
+);
 
 export const { setAuthorized, setEmail, setEmailVerified } = authSlice.actions;
 export const authReducer = authSlice.reducer;
