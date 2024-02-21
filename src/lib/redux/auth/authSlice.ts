@@ -39,6 +39,7 @@ const authSlice = createSlice({
       })
       .addCase(signUp.fulfilled, (state) => {
         state.isLoading = false;
+        state.isEmailVerified = false;
         createSuccessToast("Your account has been created successfully!", 3000);
       })
       .addCase(logIn.pending, (state) => {

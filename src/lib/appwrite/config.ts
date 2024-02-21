@@ -1,10 +1,12 @@
 import { IAppwriteConfig } from "@/types";
 import { Client, Account, Databases } from "appwrite";
+import constants from '../../constants';
 
+const { APPWRITE_PROJECT_ID, APPWRITE_ENDPOINT } = constants;
 
 export const appwriteConfig: IAppwriteConfig = {
-    projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID,
-    url: import.meta.env.VITE_APPWRITE_ENDPOINT,
+    projectId: APPWRITE_PROJECT_ID,
+    url: APPWRITE_ENDPOINT,
 };
 
 const client = new Client();

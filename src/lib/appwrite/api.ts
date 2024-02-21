@@ -2,11 +2,9 @@ import { ID, Query } from "appwrite";
 import { ILogInUser, INewUser, TodoItem, TodoItemsList } from "@/types";
 import { account, database } from "./config";
 import { createErrorToast, createSuccessToast } from "@/utils/utils";
+import constants from '../../constants';
 
-const EMAIL_VERIFICATION_URL = "https://biondohod.github.io/"
-// Use this const if you're using npm run dev. don't forget to change port
-// const EMAIL_VERIFICATION_URL = "http://localhost:5173/"
-
+const { EMAIL_VERIFICATION_URL, APPWRITE_DB_ID, APPWRITE_COLLECTION_ID } = constants;
 /**
  * Creates a new user account.
  * @param user - The user object containing the user's information.
@@ -92,8 +90,8 @@ export async function addTodoTask(
   todo: string
 ): Promise<TodoItem> {
   const response = await database.createDocument(
-    import.meta.env.VITE_APPWRITE_DB_ID,
-    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    APPWRITE_DB_ID,
+    APPWRITE_COLLECTION_ID,
     "unique()",
     {
       email: email,
@@ -116,8 +114,8 @@ export async function addTodoTask(
  */
 export async function getTodosList(email: string): Promise<TodoItemsList> {
   const response = await database.listDocuments(
-    import.meta.env.VITE_APPWRITE_DB_ID,
-    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    APPWRITE_DB_ID,
+    APPWRITE_COLLECTION_ID,
     [Query.equal("email", email)]
   );
 
@@ -140,8 +138,8 @@ export async function updateTodosList(
   isCompleted: boolean
 ): Promise<TodoItemsList> {
   const response = await database.updateDocument(
-    import.meta.env.VITE_APPWRITE_DB_ID,
-    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    APPWRITE_DB_ID,
+    APPWRITE_COLLECTION_ID,
     id,
     { isCompleted }
   );
@@ -158,8 +156,8 @@ export async function updateTodosList(
  */
 export async function deleteTodoFromList(id: string) {
   await database.deleteDocument(
-    import.meta.env.VITE_APPWRITE_DB_ID,
-    import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+    APPWRITE_DB_ID,
+    APPWRITE_COLLECTION_ID,
     id
   );
 }

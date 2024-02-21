@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <ToastContainer />
-      <main className="flex h-screen">
+      <main className="flex">
         <AuthProvider isAuth={isAuthorized}>
           <BrowserRouter>
             <Routes>
