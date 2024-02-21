@@ -1,32 +1,39 @@
-# TodoApp
-# React + TypeScript + Vite + AppWrite
+# Todo App
 
+This is a simple todo application built with React and TypeScript. It allows you to create an account, verify your email, create todos, complete todos, uncomplete todos, and delete them. The code is clean and well-documented with JSDoc.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Tech Stack
 
-Currently, two official plugins are available:
+- React
+- TypeScript
+- Redux for state management
+- Tailwind for styling
+- Vite for building
+- Shadcn for ready-made components
+- React-toastify for toasts
+- React Router DOM for routing
+- Appwrite for backend cloud service
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+To install all dependencies, run:
+```bash
+npm i
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+To run the project in your browser, run:
+```bash
+npm run dev
+```
+
+
+**Important:** Don't forget to change your localhost port in `./src/lib/appwrite/api.ts` at the beginning of the file. You need to provide your current port to make email verification links correct.
+
+## Usage
+
+After running the project, you can create an account and verify your email. Once logged in, you can create todos, mark them as complete or incomplete, and delete them.
+
+## Documentation
+
+If you have any questions about a function, you can read the JSDoc comments for information.
+
